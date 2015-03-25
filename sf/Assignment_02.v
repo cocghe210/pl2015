@@ -3,12 +3,13 @@ Theorem mult_S_1 : forall n m : nat,
   m = S n -> 
   m * (1 + n) = m * m.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n m.
+intros.
+rewrite -> H.
+reflexivity.
+Qed.
+
 (** [] *)
-
-
-
-
 
 
 (** **** Problem #2 : 1 star (zero_nbeq_plus_1) *)
@@ -26,13 +27,15 @@ Fixpoint beq_nat (n m : nat) : bool :=
 
 Theorem zero_nbeq_plus_1 : forall n : nat,
   beq_nat 0 (n + 1) = false.
+
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n.
+destruct n.
+reflexivity.
+reflexivity.
+Qed.
+  
 (** [] *)
-
-
-
-
 
 
 
@@ -45,12 +48,13 @@ Theorem negation_fn_applied_twice :
   (forall (x : bool), f x = negb x) ->
   forall (b : bool), f (f b) = b.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
-
-
-
-
+intros.
+rewrite -> H.
+rewrite -> H.
+destruct b.
+reflexivity.
+reflexivity.
+Qed.   
 
 
 (** **** Problem #4 : 2 stars (andb_eq_orb) *)
@@ -63,10 +67,32 @@ Theorem andb_eq_orb :
   (andb b c = orb b c) ->
   b = c.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
-
-
+intros.
+Lemma orb_same : 
+  forall (b:bool),
+    orb b b = b.
+Proof. intros b.  destruct b.  reflexivity.  reflexivity.  Qed.
+  rewrite <- orb_same.
+  destruct b.
+Lemma orb_always_true :
+  forall b,
+    orb true b = true.
+Proof. reflexivity. Qed.
+  rewrite <- orb_always_true with c.
+  rewrite <- H.
+  destruct c.
+  reflexivity.
+  reflexivity.
+Lemma andb_always_false : 
+  forall b,
+    andb false b = false.
+Proof. reflexivity. Qed.
+  rewrite <- andb_always_false with c.
+  rewrite -> H.
+  destruct c.
+  reflexivity.
+  reflexivity.
+Qed.
 
 
 
@@ -78,26 +104,41 @@ Proof.
 Theorem plus_n_O : forall n : nat,
   n = n + 0.
 Proof. 
-  (* FILL IN HERE *) Admitted.
+  induction n; auto.
+Qed.
 
 Theorem plus_n_Sm : forall n m : nat, 
   S (n + m) = n + (S m).
 Proof. 
-  (* FILL IN HERE *) Admitted.
+  induction n; auto.
+Qed.
+
 
 Theorem plus_comm : forall n m : nat,
   n + m = m + n.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros.
+induction n.
+simpl.
+rewrite <- plus_n_O.
+reflexivity.
+simpl.
+rewrite ->IHn.
+rewrite -> plus_n_Sm.
+reflexivity.
+Qed.
+
 
 Theorem plus_assoc : forall n m p : nat,
   n + (m + p) = (n + m) + p.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
-
-
+intros.
+induction n.
+reflexivity.
+simpl.
+rewrite -> IHn.
+reflexivity. 
+Qed.
 
 
 
@@ -115,13 +156,16 @@ Fixpoint double (n:nat) :=
 
 Lemma double_plus : forall n, double n = n + n .
 Proof.  
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
-
-
-
-
+  intros. 
+induction n.
+(*Case "n = 0".*)
+reflexivity.
+(*Case "n = S n'".*)
+simpl. 
+rewrite -> IHn.
+rewrite -> plus_n_Sm. 
+reflexivity.
+Qed.
 
 
 
@@ -132,12 +176,14 @@ Proof.
 Theorem plus_swap : forall n m p : nat, 
   n + (m + p) = m + (n + p).
 Proof.
-  (* FILL IN HERE *) Admitted.
-
-
-
-
-
+intros.
+induction n.
+reflexivity.
+simpl.
+rewrite -> IHn.
+rewrite -> plus_n_Sm.
+reflexivity. 
+Qed.
 
 
 
@@ -146,18 +192,30 @@ Proof.
 Theorem mult_plus_distr_r : forall n m p : nat,
   (n + m) * p = (n * p) + (m * p).
 Proof.
-  (* FILL IN HERE *) Admitted.
+ intros n m p.
+ induction n as [| n'].
+  (*Case "n = 0".*) 	
+ simpl.
+ reflexivity.
+  (*Case "n = S n'".*)
+ simpl.
+ rewrite IHn'. 
+ rewrite <- plus_assoc.
+ reflexivity.	
+Qed. 
 
 Theorem mult_assoc : forall n m p : nat,
   n * (m * p) = (n * m) * p.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
-
-
-
-
+  intros.
+  induction n as [| n'].
+  (*Case "n = 0".*)
+    simpl. reflexivity.
+  (*Case "n = S n'".*)
+    simpl.
+    rewrite IHn'.
+    rewrite <- mult_plus_distr_r.
+    reflexivity. Qed.
 
 
 
@@ -185,26 +243,17 @@ Definition swap_pair (p : natprod) : natprod :=
 
 
 
-
-
 (** **** Problem #9 : 1 star (snd_fst_is_swap) *)
 Theorem snd_fst_is_swap : forall (p : natprod),
   (snd p, fst p) = swap_pair p.
+ 
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
-
-
-
-
+intro p.
+destruct p as (n, m). simpl. reflexivity. Qed.
 
 
 (** **** Problem #10 : 1 star, optional (fst_swap_is_snd) *)
 Theorem fst_swap_is_snd : forall (p : natprod),
   fst (swap_pair p) = snd p.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
-
+intro p. destruct p as (m, n). simpl. reflexivity. Qed.
