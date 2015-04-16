@@ -6,7 +6,8 @@ Theorem le_ble_nat : forall n m,
   n <= m ->
   ble_nat n m = true.
 Proof.
-  (* Hint: This may be easiest to prove by induction on [m]. *)
-  (* FILL IN HERE *) admit.
+  intros n m. generalize n. clear n. induction m.
+  intros n H. inversion H.  simpl. reflexivity.
+  intros n H. destruct n. simpl. reflexivity. simpl. apply IHm.
+  apply Sn_le_Sm__n_le_m.  apply H.
 Qed.
-

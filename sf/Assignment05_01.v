@@ -9,8 +9,7 @@ Require Export Assignment05_00.
 Theorem proj2 : forall P Q : Prop, 
   P /\ Q -> Q.
 Proof.
-  (* FILL IN HERE *) admit.
-Qed.
+ intros P Q H. inversion H as [H1 H2]. apply H2. Qed.
 (** [] *)
 
 

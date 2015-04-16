@@ -6,7 +6,7 @@ Require Export Assignment05_22.
 Theorem even5_nonsense : 
   ev 5 -> 2 + 2 = 9.
 Proof.
-  (* FILL IN HERE *) admit.
+intro E. inversion E as [|n' E']. inversion E' as [|n'' E'']. inversion E'' as [|n''' E'''].
 Qed.
 (** [] *)
 

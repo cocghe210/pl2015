@@ -8,7 +8,7 @@ Require Export Assignment05_06.
 Theorem orb_false_elim : forall b c,
   orb b c = false -> b = false /\ c = false.
 Proof. 
-  (* FILL IN HERE *) admit.
+intros b c H. destruct b. inversion H. simpl in H. split. reflexivity. apply H.
 Qed.
 (** [] *)
 
