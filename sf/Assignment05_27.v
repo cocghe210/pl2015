@@ -6,7 +6,8 @@ Require Export Assignment05_26.
 Theorem even__ev: forall n : nat,
   even n -> ev n.
 Proof.
-  (* FILL IN HERE *) admit.
+intros n. induction n. unfold even.  simpl. intros H. apply ev_0.
+apply even__ev_strong.
 Qed.
 (** [] *)
 
