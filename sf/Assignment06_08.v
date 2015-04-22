@@ -15,23 +15,28 @@ Require Export Assignment06_07.
 Lemma app_length : forall (X:Type) (l1 l2 : list X),
   length (l1 ++ l2) = length l1 + length l2. 
 Proof. 
-  (* FILL IN HERE *) admit.
+intros. induction l1. simpl. reflexivity. simpl. rewrite IHl1. reflexivity.
+
 Qed.
 
 Lemma appears_in_app_split : forall (X:Type) (x:X) (l:list X),
   appears_in x l -> 
   exists l1, exists l2, l = l1 ++ (x::l2).
 Proof.
-  (* FILL IN HERE *) admit.
-Qed.
+
+intros. induction H. exists []. simpl. exists l. reflexivity.
+inversion H. exists (b::[]). exists l0. simpl. reflexivity.
+inversion IHappears_in. inversion proof. rewrite H1. rewrite proof0. 
+exists (b::witness). exists witness0. reflexivity. Qed.
+
 
 (** Now define a predicate [repeats] (analogous to [no_repeats] in the
    exercise above), such that [repeats X l] asserts that [l] contains
    at least one repeated element (of type [X]).  *)
 
 Inductive repeats {X:Type} : list X -> Prop :=
-  (* FILL IN HERE *)
-.
+| rep_base : forall l x, appears_in x l -> repeats (x::l)
+| rep_step : forall l x, repeats l -> repeats (x::l).
 
 (** Now here's a way to formalize the pigeonhole principle. List [l2]
     represents a list of pigeonhole labels, and list [l1] represents
@@ -50,7 +55,58 @@ Theorem pigeonhole_principle: forall (X:Type) (l1  l2:list X),
    length l2 < length l1 -> 
    repeats l1.  
 Proof.
+
+intros X l1 l2 EM.
+unfold excluded_middle in EM.
+assert (forall P, ~~P -> P) as NNPP.
+  intros.
+  destruct (EM P); [assumption | ].
+  elimtype False; exact (H H0).
+revert l2.
+induction l1.
+
+  simpl; intros.
+  inversion H0.
+
+  simpl.
+  intros.
+  apply NNPP; intro L1; apply L1.
+  destruct (EM (appears_in x l1)).
+
+    apply RP_hd.
+    assumption.
+
+    apply RP_tl.
+    destruct (appears_in_app_split x l2).
+
+      apply H.
+      apply ai_here.
+
+      destruct H2.
+      apply (IHl1 (witness++witness0)).
+      intros.
+      rewrite H2 in *; clear H2.
+      cut (appears_in x0 (witness ++ x :: witness0)).
+
+        intro.
+        apply app_appears_in.
+        destruct (EM (appears_in x0 witness)).
+
+          left; assumption.
+
+          apply NNPP.
+          intro L2.
+          apply L2.
+          generalize (or_comm (appears_in x0 witness) (appears_in x0 witness0)); intro.
+          destruct H5.
+          set (M := appears_in x0 witness) in *.
+          set (N := appears_in x0 witness0) in *.
+          apply H6.
+
+
+
    intros X l1. induction l1 as [|x l1'].
+
    (* FILL IN HERE *) admit. admit.
 Qed.
 

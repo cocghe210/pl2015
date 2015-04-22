@@ -11,7 +11,11 @@ Theorem not_exists_dist :
   forall (X:Type) (P : X -> Prop),
     ~ (exists x, ~ P x) -> (forall x, P x).
 Proof.
-  (* FILL IN HERE *) admit.
-Qed.
+unfold excluded_middle. intros H X P H0 x. 
+assert ( P x \/ ~ P x). apply H. inversion H1. apply H2. 
+unfold not in H2. unfold not in H0.   
+Lemma ex_false_any: forall (P: Prop) , False -> P.
+Proof. intros P H. inversion H. Qed.
+apply ex_false_any. apply H0. exists x. apply H2. Qed.
 (** [] *)
 
