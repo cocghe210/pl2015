@@ -55,56 +55,6 @@ Theorem pigeonhole_principle: forall (X:Type) (l1  l2:list X),
    length l2 < length l1 -> 
    repeats l1.  
 Proof.
-
-intros X l1 l2 EM.
-unfold excluded_middle in EM.
-assert (forall P, ~~P -> P) as NNPP.
-  intros.
-  destruct (EM P); [assumption | ].
-  elimtype False; exact (H H0).
-revert l2.
-induction l1.
-
-  simpl; intros.
-  inversion H0.
-
-  simpl.
-  intros.
-  apply NNPP; intro L1; apply L1.
-  destruct (EM (appears_in x l1)).
-
-    apply RP_hd.
-    assumption.
-
-    apply RP_tl.
-    destruct (appears_in_app_split x l2).
-
-      apply H.
-      apply ai_here.
-
-      destruct H2.
-      apply (IHl1 (witness++witness0)).
-      intros.
-      rewrite H2 in *; clear H2.
-      cut (appears_in x0 (witness ++ x :: witness0)).
-
-        intro.
-        apply app_appears_in.
-        destruct (EM (appears_in x0 witness)).
-
-          left; assumption.
-
-          apply NNPP.
-          intro L2.
-          apply L2.
-          generalize (or_comm (appears_in x0 witness) (appears_in x0 witness0)); intro.
-          destruct H5.
-          set (M := appears_in x0 witness) in *.
-          set (N := appears_in x0 witness0) in *.
-          apply H6.
-
-
-
    intros X l1. induction l1 as [|x l1'].
 
    (* FILL IN HERE *) admit. admit.
