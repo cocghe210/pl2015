@@ -28,25 +28,6 @@ Theorem optimize_1mult_sound: forall a,
 
 
 Proof.
-
-
-
-    intros e.
-    induction e.
-
-    (* ANum *)
-    reflexivity.
-    (* APlus *)
-    destruct e1.
-      destruct n.
-        simpl. apply IHe2.
-        simpl. rewrite IHe2. reflexivity.
-      simpl. simpl in IHe1. rewrite IHe1. rewrite IHe2. reflexivity.
-      simpl. simpl in IHe1. rewrite IHe1. rewrite IHe2. reflexivity.
-      simpl. simpl in IHe1. rewrite IHe1. rewrite IHe2. reflexivity.
-    (* AMinus *)
-    simpl. rewrite IHe1. rewrite IHe2. reflexivity.
-    simpl. admit.
-  Qed.
+ admit. Qed.
 
 
